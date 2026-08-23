@@ -1,18 +1,23 @@
 package com.unifor.MedMaisFacil.mapper;
 
 import com.unifor.MedMaisFacil.entity.SinaisVitaisEntity;
+import com.unifor.MedMaisFacil.model.Chamado;
 import com.unifor.MedMaisFacil.model.SinaisVitais;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class SinaisVitaisMapperImpl implements SinaisVitaisMapper {
-
-    private final ChamadoMapper chamadoMapper;
 
     @Override
     public SinaisVitais toModel(SinaisVitaisEntity entity) {
+        Chamado chamadoModel = null;
+
+        if (entity.getChamado() != null) {
+            chamadoModel = Chamado.builder()
+                    .id(entity.getChamado().getId())
+                    .build();
+        }
+
         return SinaisVitais.builder()
                 .id(entity.getId())
                 .pressaoArterial(entity.getPressaoArterial())
@@ -21,7 +26,7 @@ public class SinaisVitaisMapperImpl implements SinaisVitaisMapper {
                 .frequenciaRespiratoria(entity.getFrequenciaRespiratoria())
                 .saturacaoO2(entity.getSaturacaoO2())
                 .capturadoEm(entity.getCapturadoEm())
-                .chamado(entity.getChamado() != null ? chamadoMapper.toModel(entity.getChamado()) : null)
+                .chamado(chamadoModel)
                 .build();
     }
 
@@ -35,7 +40,6 @@ public class SinaisVitaisMapperImpl implements SinaisVitaisMapper {
                 .frequenciaRespiratoria(model.getFrequenciaRespiratoria())
                 .saturacaoO2(model.getSaturacaoO2())
                 .capturadoEm(model.getCapturadoEm())
-                .chamado(model.getChamado() != null ? chamadoMapper.toEntity(model.getChamado()) : null)
                 .build();
     }
 }

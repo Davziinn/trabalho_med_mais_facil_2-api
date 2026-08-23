@@ -1,6 +1,5 @@
 package com.unifor.MedMaisFacil.model;
 
-import com.unifor.MedMaisFacil.entity.ChamadoEntity;
 import com.unifor.MedMaisFacil.entity.RespostasQuestionario;
 import com.unifor.MedMaisFacil.enums.SintomaPrincipal;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class QuestionarioSintomas {
 
     private Long id;
-    private ChamadoEntity chamado;
+    private Chamado chamado;
     private SintomaPrincipal sintomaPrincipal;
     private RespostasQuestionario respostas;
 }

@@ -4,4 +4,6 @@ import com.unifor.MedMaisFacil.model.Paciente;
 
 public interface PacienteService {
     Paciente cadastrar (Paciente paciente);
+
+    Paciente buscarPacienteById (Long id);
 }

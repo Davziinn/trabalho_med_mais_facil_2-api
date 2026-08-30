@@ -1,6 +1,10 @@
 package com.unifor.MedMaisFacil.mapper;
 
+import com.unifor.MedMaisFacil.dto.chamado.ChamadoRequestDTO;
+import com.unifor.MedMaisFacil.dto.chamado.ChamadoResponseDTO;
 import com.unifor.MedMaisFacil.entity.ChamadoEntity;
+import com.unifor.MedMaisFacil.entity.QuestionarioSintomasEntity;
+import com.unifor.MedMaisFacil.entity.SinaisVitaisEntity;
 import com.unifor.MedMaisFacil.model.Chamado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,15 +33,47 @@ public class ChamadoMapperImpl implements ChamadoMapper {
 
     @Override
     public ChamadoEntity toEntity(Chamado model) {
-        return ChamadoEntity.builder()
+        ChamadoEntity entity = ChamadoEntity.builder()
                 .id(model.getId())
                 .prioridadeChamado(model.getPrioridadeChamado())
                 .statusChamado(model.getStatusChamado())
                 .senhaFila(model.getSenhaFila())
                 .dataCriacao(model.getDataCriacao())
                 .paciente(model.getPaciente() != null ? pacienteMapper.toEntity(model.getPaciente()) : null)
-                .sinaisVitais(model.getSinaisVitais() != null ? sinaisVitaisMapper.toEntity(model.getSinaisVitais()) : null)
-                .questionarioSintomas(model.getQuestionarioSintomas() != null ? questionarioSintomaMapper.toEntity(model.getQuestionarioSintomas()) : null)
                 .build();
+
+        if (model.getSinaisVitais() != null) {
+            SinaisVitaisEntity sinaisVitaisEntity = sinaisVitaisMapper.toEntity(model.getSinaisVitais());
+            sinaisVitaisEntity.setChamado(entity);
+            entity.setSinaisVitais(sinaisVitaisEntity);
+        }
+
+        if (model.getQuestionarioSintomas() != null) {
+            QuestionarioSintomasEntity questionarioEntity = questionarioSintomaMapper.toEntity(model.getQuestionarioSintomas());
+            questionarioEntity.setChamado(entity);
+            entity.setQuestionarioSintomas(questionarioEntity);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public Chamado toModel(ChamadoRequestDTO dto) {
+        return Chamado.builder()
+                .sintomaPrincipal(dto.sintomaPrincipal())
+                .discriminadoresGerais(dto.discriminadoresGerais())
+                .respostasFluxograma(dto.respostasFluxograma())
+                .build();
+    }
+
+    @Override
+    public ChamadoResponseDTO toDTO(Chamado model) {
+        return new ChamadoResponseDTO(
+                model.getId(),
+                model.getSenhaFila(),
+                model.getStatusChamado(),
+                model.getPrioridadeChamado(),
+                model.getDataCriacao()
+        );
     }
 }

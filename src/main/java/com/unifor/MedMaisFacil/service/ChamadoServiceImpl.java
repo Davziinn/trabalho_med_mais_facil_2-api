@@ -1,11 +1,13 @@
 package com.unifor.MedMaisFacil.service;
 
 import com.unifor.MedMaisFacil.entity.RespostasQuestionario;
+import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
 import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
 import com.unifor.MedMaisFacil.model.Chamado;
 import com.unifor.MedMaisFacil.model.Paciente;
 import com.unifor.MedMaisFacil.model.QuestionarioSintomas;
+import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
 import com.unifor.MedMaisFacil.repository.ChamadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,13 @@ public class ChamadoServiceImpl implements ChamadoService{
                 .respostas(respostas)
                 .build();
 
+        PrioridadeChamado prioridadeCor = ProtocoloManchester.classificar(
+                chamado.getDiscriminadoresGerais(),
+                chamado.getSintomaPrincipal(),
+                chamado.getRespostasFluxograma()
+        );
+
+
         Chamado chamadoCriado = Chamado.builder()
                 .id(chamado.getId())
                 .statusChamado(StatusChamado.AGUARDANDO_TRIAGEM)
@@ -41,7 +50,7 @@ public class ChamadoServiceImpl implements ChamadoService{
                 .paciente(pacienteEncontrado)
                 .questionarioSintomas(questionario)
                 .dataCriacao(chamado.getDataCriacao())
-//                .prioridadeChamado(null) por enquanto até existir o motor de classificação dele
+                .prioridadeChamado(prioridadeCor)
                 .build();
 
         return chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(chamadoCriado)));

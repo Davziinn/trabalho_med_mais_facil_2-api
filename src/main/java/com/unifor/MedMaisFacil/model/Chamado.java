@@ -29,4 +29,6 @@ public class Chamado {
     private SintomaPrincipal sintomaPrincipal;
     private Map<String, Boolean> discriminadoresGerais;
     private Map<String, Object> respostasFluxograma;
+
+    private Orientacao orientacao;
 }

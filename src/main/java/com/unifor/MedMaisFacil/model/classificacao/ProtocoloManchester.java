@@ -12,16 +12,18 @@ public class ProtocoloManchester {
             "RISCO_MORTE_VIAS_AEREAS", PrioridadeChamado.VERMELHO,
             "ALTERACAO_CONSCIENCIA", PrioridadeChamado.VERMELHO,
             "HEMORRAGIA_NAO_CONTROLADA", PrioridadeChamado.VERMELHO,
+            "DOR_INTENSA_8_10", PrioridadeChamado.LARANJA,
             "FEBRE_ALTA_MAL_ESTAR", PrioridadeChamado.LARANJA,
-            "AGRAVAMENTO_RAPIDO0", PrioridadeChamado.LARANJA
+            "AGRAVAMENTO_RAPIDO", PrioridadeChamado.LARANJA
     );
 
     private static final Map<SintomaPrincipal, Map<String, PrioridadeChamado>> FLUXOGRAMA_PRIORIDADE = new EnumMap<>(SintomaPrincipal.class);
 
     static {
         FLUXOGRAMA_PRIORIDADE.put(SintomaPrincipal.DOR_TORACICA, Map.of(
+                "DISPNEIA_GRAVE_JUNTO", PrioridadeChamado.VERMELHO,
                 "SUDORESE_FRIA", PrioridadeChamado.VERMELHO,
-                "IRRADIA_BRANCO_MANDIBULA", PrioridadeChamado.LARANJA,
+                "IRRADIA_BRACO_MANDIBULA", PrioridadeChamado.LARANJA,
                 "NAUSEA_JUNTO", PrioridadeChamado.LARANJA,
                 "DOR_MODERADA_ESTAVEL", PrioridadeChamado.AMARELO,
                 "DOR_LEVE_CURTA", PrioridadeChamado.VERDE,
@@ -58,11 +60,11 @@ public class ProtocoloManchester {
         FLUXOGRAMA_PRIORIDADE.put(SintomaPrincipal.CEFALEIA, Map.of(
                 "PIOR_DOR_VIDA_SUBITA", PrioridadeChamado.VERMELHO,
                 "ALTERACAO_VISUAL_OU_RIGIDEZ_NUCA", PrioridadeChamado.VERMELHO,
-                "NAUSE_VOMITO_FORTE", PrioridadeChamado.LARANJA,
+                "NAUSEA_VOMITO_FORTE", PrioridadeChamado.LARANJA,
                 "FEBRE_JUNTO_CEFALEIA", PrioridadeChamado.LARANJA,
                 "NAO_MELHORA_ANALGESICO", PrioridadeChamado.AMARELO,
                 "PADRAO_CONHECIDO_ENXAQUECA", PrioridadeChamado.VERDE,
-                "LEVE_MELHORA_REPOPUSO", PrioridadeChamado.AZUL
+                "LEVE_MELHORA_REPOUSO", PrioridadeChamado.AZUL
         ));
     }
 
@@ -74,7 +76,6 @@ public class ProtocoloManchester {
         Map<String, PrioridadeChamado> mapaDoSintoma = FLUXOGRAMA_PRIORIDADE.getOrDefault(sintoma, Map.of());
         Map<String, Boolean> respostaFluxogramaComoBoolean = converterParaBoolean(respostasFluxograma);
         prioridadeFinal = avaliar(respostaFluxogramaComoBoolean, mapaDoSintoma, prioridadeFinal);
-
 
         return prioridadeFinal;
     }

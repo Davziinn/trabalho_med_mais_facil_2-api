@@ -26,6 +26,7 @@ public class SintomaServiceImpl implements SintomaService {
 
     static {
         PERGUNTAS_FLUXOGRAMA.put(SintomaPrincipal.DOR_TORACICA, List.of(
+                new PerguntaDTO("DISPNEIA_GRAVE_JUNTO", "Além da dor, você está com falta de ar grave?"),
                 new PerguntaDTO("SUDORESE_FRIA", "Está com suor frio junto com a dor?"),
                 new PerguntaDTO("IRRADIA_BRANCO_MANDIBULA", "A dor se espalha (irradia) para o braço ou para a mandíbula?"),
                 new PerguntaDTO("NAUSEA_JUNTO", "Você sente nausea junto com a dor?"),

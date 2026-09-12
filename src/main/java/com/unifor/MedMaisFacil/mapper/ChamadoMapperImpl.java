@@ -3,9 +3,11 @@ package com.unifor.MedMaisFacil.mapper;
 import com.unifor.MedMaisFacil.dto.chamado.ChamadoRequestDTO;
 import com.unifor.MedMaisFacil.dto.chamado.ChamadoResponseDTO;
 import com.unifor.MedMaisFacil.entity.ChamadoEntity;
-import com.unifor.MedMaisFacil.entity.QuestionarioSintomasEntity;
+import com.unifor.MedMaisFacil.entity.PacienteEntity;
 import com.unifor.MedMaisFacil.entity.SinaisVitaisEntity;
+import com.unifor.MedMaisFacil.entity.QuestionarioSintomasEntity;
 import com.unifor.MedMaisFacil.model.Chamado;
+import com.unifor.MedMaisFacil.model.Paciente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +15,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChamadoMapperImpl implements ChamadoMapper {
 
-    private final PacienteMapper pacienteMapper;
     private final SinaisVitaisMapper sinaisVitaisMapper;
     private final QuestionarioSintomaMapper questionarioSintomaMapper;
+    private final OrientacaoMapper orientacaoMapper;
 
     @Override
     public Chamado toModel(ChamadoEntity entity) {
@@ -25,7 +27,9 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .statusChamado(entity.getStatusChamado())
                 .senhaFila(entity.getSenhaFila())
                 .dataCriacao(entity.getDataCriacao())
-                .paciente(entity.getPaciente() != null ? pacienteMapper.toModel(entity.getPaciente()) : null)
+                .paciente(entity.getPaciente() != null
+                        ? Paciente.builder().id(entity.getPaciente().getId()).build()
+                        : null)
                 .sinaisVitais(entity.getSinaisVitais() != null ? sinaisVitaisMapper.toModel(entity.getSinaisVitais()) : null)
                 .questionarioSintomas(entity.getQuestionarioSintomas() != null ? questionarioSintomaMapper.toModel(entity.getQuestionarioSintomas()) : null)
                 .build();
@@ -39,7 +43,9 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .statusChamado(model.getStatusChamado())
                 .senhaFila(model.getSenhaFila())
                 .dataCriacao(model.getDataCriacao())
-                .paciente(model.getPaciente() != null ? pacienteMapper.toEntity(model.getPaciente()) : null)
+                .paciente(model.getPaciente() != null
+                        ? PacienteEntity.builder().id(model.getPaciente().getId()).build()
+                        : null)
                 .build();
 
         if (model.getSinaisVitais() != null) {
@@ -70,10 +76,10 @@ public class ChamadoMapperImpl implements ChamadoMapper {
     public ChamadoResponseDTO toDTO(Chamado model) {
         return new ChamadoResponseDTO(
                 model.getId(),
-                model.getSenhaFila(),
                 model.getStatusChamado(),
                 model.getPrioridadeChamado(),
-                model.getDataCriacao()
+                model.getDataCriacao(),
+                model.getOrientacao() != null ? orientacaoMapper.toDTO(model.getOrientacao()) : null
         );
     }
 }

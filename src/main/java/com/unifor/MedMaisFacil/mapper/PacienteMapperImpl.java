@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PacienteMapperImpl implements PacienteMapper {
 
-    private ChamadoMapper chamadoMapper;
+    private final ChamadoMapper chamadoMapper;
 
     @Override
     public Paciente toModel(PacienteEntity entity) {

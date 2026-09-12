@@ -5,6 +5,7 @@ import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
 import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
 import com.unifor.MedMaisFacil.model.Chamado;
+import com.unifor.MedMaisFacil.model.Orientacao;
 import com.unifor.MedMaisFacil.model.Paciente;
 import com.unifor.MedMaisFacil.model.QuestionarioSintomas;
 import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
@@ -20,6 +21,8 @@ public class ChamadoServiceImpl implements ChamadoService{
     private final PacienteService pacienteService;
     private final ChamadoRepository chamadoRepository;
     private final ChamadoMapper chamadoMapper;
+
+    private final OrientacaoService orientacaoService;
 
     @Override
     @Transactional
@@ -42,18 +45,22 @@ public class ChamadoServiceImpl implements ChamadoService{
                 chamado.getRespostasFluxograma()
         );
 
+        Orientacao orientacaoMedica = orientacaoService.buscarOrientacao(chamado.getSintomaPrincipal());
 
         Chamado chamadoCriado = Chamado.builder()
                 .id(chamado.getId())
                 .statusChamado(StatusChamado.AGUARDANDO_TRIAGEM)
+                // por enquanto a geração de senha vai ficar aqui. mas será movida para outro lugar
                 .senhaFila(gerarSenhaFila())
                 .paciente(pacienteEncontrado)
                 .questionarioSintomas(questionario)
                 .dataCriacao(chamado.getDataCriacao())
                 .prioridadeChamado(prioridadeCor)
+                .orientacao(orientacaoMedica)
                 .build();
 
-        return chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(chamadoCriado)));
+        Chamado chamadoSalvo = chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(chamadoCriado)));
+        return chamadoSalvo.toBuilder().orientacao(orientacaoMedica).build();
     }
 
     private String gerarSenhaFila() {

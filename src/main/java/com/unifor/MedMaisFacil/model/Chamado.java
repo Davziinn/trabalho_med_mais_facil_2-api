@@ -31,4 +31,6 @@ public class Chamado {
     private Map<String, Object> respostasFluxograma;
 
     private Orientacao orientacao;
+
+    private UnidadeSaude unidadeSaude;
 }

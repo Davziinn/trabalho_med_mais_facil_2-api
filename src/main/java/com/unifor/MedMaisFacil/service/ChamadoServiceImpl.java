@@ -18,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChamadoServiceImpl implements ChamadoService{
 
-    private final PacienteService pacienteService;
     private final ChamadoRepository chamadoRepository;
     private final ChamadoMapper chamadoMapper;
+
+    private final PacienteService pacienteService;
 
     private final OrientacaoService orientacaoService;
 
@@ -57,6 +58,7 @@ public class ChamadoServiceImpl implements ChamadoService{
                 .dataCriacao(chamado.getDataCriacao())
                 .prioridadeChamado(prioridadeCor)
                 .orientacao(orientacaoMedica)
+                //.unidadeSaude(realizar o calculo para unidade de saúde)
                 .build();
 
         Chamado chamadoSalvo = chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(chamadoCriado)));

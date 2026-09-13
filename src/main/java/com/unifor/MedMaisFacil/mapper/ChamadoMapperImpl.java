@@ -18,6 +18,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
     private final SinaisVitaisMapper sinaisVitaisMapper;
     private final QuestionarioSintomaMapper questionarioSintomaMapper;
     private final OrientacaoMapper orientacaoMapper;
+    private final UnidadeSaudeMapper unidadeSaudeMapper;
 
     @Override
     public Chamado toModel(ChamadoEntity entity) {
@@ -79,7 +80,8 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 model.getStatusChamado(),
                 model.getPrioridadeChamado(),
                 model.getDataCriacao(),
-                model.getOrientacao() != null ? orientacaoMapper.toDTO(model.getOrientacao()) : null
+                model.getOrientacao() != null ? orientacaoMapper.toDTO(model.getOrientacao()) : null,
+                model.getUnidadeSaude() != null ? unidadeSaudeMapper.toDTO(model.getUnidadeSaude()) : null
         );
     }
 }

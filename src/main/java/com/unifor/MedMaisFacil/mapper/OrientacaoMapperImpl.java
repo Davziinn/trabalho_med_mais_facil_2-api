@@ -10,6 +10,8 @@ public class OrientacaoMapperImpl implements OrientacaoMapper {
     @Override
     public OrientacaoResponseDTO toDTO(Orientacao model) {
         return new OrientacaoResponseDTO(
+                model.isUrgente(),
+                model.getMensagemUrgente(),
                 model.getCuidadosCasa(),
                 model.getSinaisAlerta()
         );

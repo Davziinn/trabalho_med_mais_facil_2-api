@@ -13,6 +13,8 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class Orientacao {
 
+    private boolean urgente;
+    private String mensagemUrgente;
     private List<String> cuidadosCasa;
     private List<String> sinaisAlerta;
 }

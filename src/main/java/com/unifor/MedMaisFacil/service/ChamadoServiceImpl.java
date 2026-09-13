@@ -45,7 +45,7 @@ public class ChamadoServiceImpl implements ChamadoService{
                 chamado.getRespostasFluxograma()
         );
 
-        Orientacao orientacaoMedica = orientacaoService.buscarOrientacao(chamado.getSintomaPrincipal());
+        Orientacao orientacaoMedica = orientacaoService.buscarOrientacao(chamado.getSintomaPrincipal(), prioridadeCor);
 
         Chamado chamadoCriado = Chamado.builder()
                 .id(chamado.getId())

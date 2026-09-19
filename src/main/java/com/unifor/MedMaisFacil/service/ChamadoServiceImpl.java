@@ -3,11 +3,9 @@ package com.unifor.MedMaisFacil.service;
 import com.unifor.MedMaisFacil.entity.RespostasQuestionario;
 import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
+import com.unifor.MedMaisFacil.exceptions.UnidadeSaudeException;
 import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
-import com.unifor.MedMaisFacil.model.Chamado;
-import com.unifor.MedMaisFacil.model.Orientacao;
-import com.unifor.MedMaisFacil.model.Paciente;
-import com.unifor.MedMaisFacil.model.QuestionarioSintomas;
+import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
 import com.unifor.MedMaisFacil.repository.ChamadoRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,8 @@ public class ChamadoServiceImpl implements ChamadoService{
     private final PacienteService pacienteService;
 
     private final OrientacaoService orientacaoService;
+
+    private final UnidadeSaudeService unidadeSaudeService;
 
     @Override
     @Transactional
@@ -47,6 +47,7 @@ public class ChamadoServiceImpl implements ChamadoService{
         );
 
         Orientacao orientacaoMedica = orientacaoService.buscarOrientacao(chamado.getSintomaPrincipal(), prioridadeCor);
+        UnidadeSaude unidadeSaudeRecomendada = buscarUnidadeSaudeRecomendada(chamado);
 
         Chamado chamadoCriado = Chamado.builder()
                 .id(chamado.getId())
@@ -58,16 +59,31 @@ public class ChamadoServiceImpl implements ChamadoService{
                 .dataCriacao(chamado.getDataCriacao())
                 .prioridadeChamado(prioridadeCor)
                 .orientacao(orientacaoMedica)
-                //.unidadeSaude(realizar o calculo para unidade de saúde)
+                .unidadeSaude(unidadeSaudeRecomendada)
                 .build();
 
         Chamado chamadoSalvo = chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(chamadoCriado)));
-        return chamadoSalvo.toBuilder().orientacao(orientacaoMedica).build();
+        return chamadoSalvo.toBuilder()
+                .orientacao(orientacaoMedica)
+                .unidadeSaude(unidadeSaudeRecomendada)
+                .build();
     }
 
     private String gerarSenhaFila() {
         long totalChamados = chamadoRepository.count();
         return "P" + (totalChamados + 1);
+    }
+
+    private UnidadeSaude buscarUnidadeSaudeRecomendada(Chamado chamado) {
+        if (chamado.getSintomaPrincipal() == null || chamado.getLatitudeAtual() == null || chamado.getLongitudeAtual() == null) {
+            return null;
+        }
+
+        return unidadeSaudeService.buscarUnidadeSaudeMaisProxima(
+                chamado.getSintomaPrincipal(),
+                chamado.getLatitudeAtual(),
+                chamado.getLongitudeAtual()
+        ).orElse(null);
     }
 
 }

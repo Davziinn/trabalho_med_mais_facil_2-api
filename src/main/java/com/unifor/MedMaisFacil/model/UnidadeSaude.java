@@ -17,7 +17,14 @@ public class UnidadeSaude {
     private Long id;
     private String nome;
     private String endereco;
+    private Double distanciaKm;
     private Double latitude;
     private Double longitude;
     private List<SintomaPrincipal> sintomasAtendidos;
+
+    public UnidadeSaude(String nome, String endereco, double distanciaKm) {
+        this.nome = nome;
+        this.endereco = endereco;
+        this.distanciaKm = distanciaKm;
+    }
 }

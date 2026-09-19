@@ -70,6 +70,8 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .sintomaPrincipal(dto.sintomaPrincipal())
                 .discriminadoresGerais(dto.discriminadoresGerais())
                 .respostasFluxograma(dto.respostasFluxograma())
+                .latitudeAtual(dto.latitudeAtual())
+                .longitudeAtual(dto.longitudeAtual())
                 .build();
     }
 

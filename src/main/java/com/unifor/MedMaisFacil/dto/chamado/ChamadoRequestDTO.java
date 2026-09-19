@@ -8,5 +8,7 @@ import java.util.Map;
 public record ChamadoRequestDTO(
         @NotNull SintomaPrincipal sintomaPrincipal,
         @NotNull Map<String, Boolean> discriminadoresGerais,
-        @NotNull Map<String, Object> respostasFluxograma
+        @NotNull Map<String, Object> respostasFluxograma,
+        Double latitudeAtual,
+        Double longitudeAtual
 ) {}

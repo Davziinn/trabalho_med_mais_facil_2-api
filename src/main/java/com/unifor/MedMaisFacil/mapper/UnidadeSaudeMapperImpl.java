@@ -36,7 +36,8 @@ public class UnidadeSaudeMapperImpl implements UnidadeSaudeMapper {
     public UnidadeSaudeResponseDTO toDTO(UnidadeSaude model) {
         return new UnidadeSaudeResponseDTO(
                 model.getNome(),
-                model.getEndereco()
+                model.getEndereco(),
+                model.getDistanciaKm()
         );
     }
 }

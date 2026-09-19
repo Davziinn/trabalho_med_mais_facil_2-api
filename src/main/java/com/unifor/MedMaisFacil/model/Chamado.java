@@ -33,4 +33,7 @@ public class Chamado {
     private Orientacao orientacao;
 
     private UnidadeSaude unidadeSaude;
+
+    private Double latitudeAtual;
+    private Double longitudeAtual;
 }

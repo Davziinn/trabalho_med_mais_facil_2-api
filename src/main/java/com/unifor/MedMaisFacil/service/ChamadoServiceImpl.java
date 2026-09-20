@@ -3,7 +3,6 @@ package com.unifor.MedMaisFacil.service;
 import com.unifor.MedMaisFacil.entity.RespostasQuestionario;
 import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
-import com.unifor.MedMaisFacil.exceptions.UnidadeSaudeException;
 import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
 import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
@@ -12,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class ChamadoServiceImpl implements ChamadoService{
+public class ChamadoServiceImpl implements ChamadoService {
 
     private final ChamadoRepository chamadoRepository;
     private final ChamadoMapper chamadoMapper;
@@ -67,6 +68,13 @@ public class ChamadoServiceImpl implements ChamadoService{
                 .orientacao(orientacaoMedica)
                 .unidadeSaude(unidadeSaudeRecomendada)
                 .build();
+    }
+
+    @Override
+    public List<Chamado> buscarChamadoByPacienteIdAndStatus(Long pacienteId) {
+        return chamadoRepository.findByPaciente_IdAndStatusChamado(pacienteId, StatusChamado.AGUARDANDO_TRIAGEM).stream()
+                .map(chamadoMapper::toModel)
+                .toList();
     }
 
     private String gerarSenhaFila() {

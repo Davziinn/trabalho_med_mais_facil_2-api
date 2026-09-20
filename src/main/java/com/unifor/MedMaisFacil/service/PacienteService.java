@@ -6,4 +6,6 @@ public interface PacienteService {
     Paciente cadastrar (Paciente paciente);
 
     Paciente buscarPacienteById (Long id);
+
+    Paciente buscarPacienteByCpf (String cpf);
 }

@@ -1,8 +1,14 @@
 package com.unifor.MedMaisFacil.dto.paciente;
 
-public record PacienteResponseDTO(
-        Long id,
+import com.unifor.MedMaisFacil.dto.chamado.ChamadoResponseDTO;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public record PacienteResponseDTO (
         String nome,
-        String email
-) {
-}
+        LocalDate dataNascimento,
+        String sexo,
+        String email,
+        List<ChamadoResponseDTO> chamados
+) {}

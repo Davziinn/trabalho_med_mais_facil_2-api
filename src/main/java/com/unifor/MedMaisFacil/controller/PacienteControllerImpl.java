@@ -1,6 +1,7 @@
 package com.unifor.MedMaisFacil.controller;
 
 import com.unifor.MedMaisFacil.dto.paciente.PacienteRequestDTO;
+import com.unifor.MedMaisFacil.dto.paciente.CadastroPacienteResponseDTO;
 import com.unifor.MedMaisFacil.dto.paciente.PacienteResponseDTO;
 import com.unifor.MedMaisFacil.mapper.PacienteMapper;
 import com.unifor.MedMaisFacil.model.Paciente;
@@ -21,8 +22,15 @@ public class PacienteControllerImpl implements PacienteController{
 
     @Override
     @PostMapping
-    public ResponseEntity<PacienteResponseDTO> cadastrarPaciente(@Valid @RequestBody PacienteRequestDTO dto) {
+    public ResponseEntity<CadastroPacienteResponseDTO> cadastrarPaciente(@Valid @RequestBody PacienteRequestDTO dto) {
         Paciente pacienteCadastrado = pacienteService.cadastrar(pacienteMapper.toModel(dto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteMapper.toDTO(pacienteCadastrado));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteMapper.toCadastroDTO(pacienteCadastrado));
+    }
+
+    @Override
+    @GetMapping("/{cpf}")
+    public ResponseEntity<PacienteResponseDTO> identificacaoPaciente (@PathVariable String cpf) {
+        Paciente pacienteIdentificado = pacienteService.buscarPacienteByCpf(cpf);
+        return ResponseEntity.ok(pacienteMapper.toDTO(pacienteIdentificado));
     }
 }

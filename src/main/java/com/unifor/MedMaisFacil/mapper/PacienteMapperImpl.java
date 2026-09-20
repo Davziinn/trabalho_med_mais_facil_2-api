@@ -1,6 +1,7 @@
 package com.unifor.MedMaisFacil.mapper;
 
 import com.unifor.MedMaisFacil.dto.paciente.PacienteRequestDTO;
+import com.unifor.MedMaisFacil.dto.paciente.CadastroPacienteResponseDTO;
 import com.unifor.MedMaisFacil.dto.paciente.PacienteResponseDTO;
 import com.unifor.MedMaisFacil.entity.ChamadoEntity;
 import com.unifor.MedMaisFacil.entity.PacienteEntity;
@@ -23,6 +24,7 @@ public class PacienteMapperImpl implements PacienteMapper {
                 .id(entity.getId())
                 .cpf(entity.getCpf())
                 .nome(entity.getNome())
+                .sexo(entity.getSexo())
                 .senha(entity.getSenha())
                 .email(entity.getEmail())
                 .dataCadastro(entity.getDataCadastro())
@@ -81,11 +83,22 @@ public class PacienteMapperImpl implements PacienteMapper {
     }
 
     @Override
-    public PacienteResponseDTO toDTO(Paciente model) {
-        return new PacienteResponseDTO(
+    public CadastroPacienteResponseDTO toCadastroDTO (Paciente model) {
+        return new CadastroPacienteResponseDTO(
                 model.getId(),
                 model.getNome(),
                 model.getEmail()
+        );
+    }
+
+    @Override
+    public PacienteResponseDTO toDTO(Paciente model) {
+        return new PacienteResponseDTO(
+                model.getNome(),
+                model.getDataNascimento(),
+                model.getSexo(),
+                model.getEmail(),
+                model.getChamados() != null ? model.getChamados().stream().map(chamadoMapper::toDTO).toList() : null
         );
     }
 }

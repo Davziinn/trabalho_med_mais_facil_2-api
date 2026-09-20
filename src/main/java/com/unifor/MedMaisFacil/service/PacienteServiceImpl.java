@@ -1,6 +1,5 @@
 package com.unifor.MedMaisFacil.service;
 
-import com.unifor.MedMaisFacil.entity.PacienteEntity;
 import com.unifor.MedMaisFacil.exceptions.PacienteNotFoundException;
 import com.unifor.MedMaisFacil.mapper.PacienteMapper;
 import com.unifor.MedMaisFacil.model.Paciente;
@@ -32,6 +31,13 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public Paciente buscarPacienteById(Long id) {
         return pacienteMapper.toModel(pacienteRepository.findById(id).orElseThrow(
+                () -> new PacienteNotFoundException("Paciente não encontrado")
+        ));
+    }
+
+    @Override
+    public Paciente buscarPacienteByCpf(String cpf) {
+        return pacienteMapper.toModel(pacienteRepository.findByCpf(cpf).orElseThrow(
                 () -> new PacienteNotFoundException("Paciente não encontrado")
         ));
     }

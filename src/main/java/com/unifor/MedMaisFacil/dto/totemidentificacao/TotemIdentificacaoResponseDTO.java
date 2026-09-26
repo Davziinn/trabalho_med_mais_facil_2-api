@@ -4,6 +4,7 @@ import java.util.List;
 
 public record TotemIdentificacaoResponseDTO(
         String nomePaciente,
+        int idade,
         List<ChamadoPendenteResponseDTO> chamadosPendentes
 ) {
 }

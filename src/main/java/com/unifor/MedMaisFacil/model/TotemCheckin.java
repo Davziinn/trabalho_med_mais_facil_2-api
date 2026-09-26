@@ -1,19 +1,17 @@
 package com.unifor.MedMaisFacil.model;
 
+import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class TotemIdentificacao {
+public class TotemCheckin {
 
-    private String nomePaciente;
-    private int idade;
-    private List<ChamadoPendente> chamadosPendentes;
+    private String senhaFila;
+    private PrioridadeChamado prioridadeChamado;
 }

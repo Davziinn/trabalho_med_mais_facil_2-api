@@ -9,4 +9,8 @@ public interface ChamadoService {
     Chamado criarChamado (Long pacienteId, Chamado chamado);
 
     List<Chamado> buscarChamadoByPacienteIdAndStatus (Long pacienteId);
+
+    Chamado buscarChamadoById (Long chamadoId);
+
+    Chamado salvarAlteracoes(Chamado dadosChamado);
 }

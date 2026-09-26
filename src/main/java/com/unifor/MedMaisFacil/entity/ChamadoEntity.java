@@ -24,7 +24,7 @@ public class ChamadoEntity {
     @Column(name = "ID_CHAMADO")
     private Long id;
 
-    @Column(name = "SENHA_FILA", nullable = false, unique = true)
+    @Column(name = "SENHA_FILA", unique = true)
     private String senhaFila;
 
     @Enumerated(EnumType.STRING)

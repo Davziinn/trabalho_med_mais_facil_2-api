@@ -3,6 +3,7 @@ package com.unifor.MedMaisFacil.service;
 import com.unifor.MedMaisFacil.entity.RespostasQuestionario;
 import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
+import com.unifor.MedMaisFacil.exceptions.ChamadoNotFoundException;
 import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
 import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
@@ -53,8 +54,6 @@ public class ChamadoServiceImpl implements ChamadoService {
         Chamado chamadoCriado = Chamado.builder()
                 .id(chamado.getId())
                 .statusChamado(StatusChamado.AGUARDANDO_TRIAGEM)
-                // por enquanto a geração de senha vai ficar aqui. mas será movida para outro lugar
-                .senhaFila(gerarSenhaFila())
                 .paciente(pacienteEncontrado)
                 .questionarioSintomas(questionario)
                 .dataCriacao(chamado.getDataCriacao())
@@ -77,9 +76,16 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .toList();
     }
 
-    private String gerarSenhaFila() {
-        long totalChamados = chamadoRepository.count();
-        return "P" + (totalChamados + 1);
+    @Override
+    public Chamado buscarChamadoById(Long chamadoId) {
+        return chamadoMapper.toModel(chamadoRepository.findById(chamadoId).orElseThrow(
+                () -> new ChamadoNotFoundException("Chamado não encontrado")
+        ));
+    }
+
+    @Override
+    public Chamado salvarAlteracoes(Chamado dadosChamado) {
+        return chamadoMapper.toModel(chamadoRepository.save(chamadoMapper.toEntity(dadosChamado)));
     }
 
     private UnidadeSaude buscarUnidadeSaudeRecomendada(Chamado chamado) {

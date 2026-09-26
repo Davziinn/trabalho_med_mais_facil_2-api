@@ -1,9 +1,8 @@
 package com.unifor.MedMaisFacil.service;
 
-import com.unifor.MedMaisFacil.model.Chamado;
-import com.unifor.MedMaisFacil.model.ChamadoPendente;
-import com.unifor.MedMaisFacil.model.Paciente;
-import com.unifor.MedMaisFacil.model.TotemIdentificacao;
+import com.unifor.MedMaisFacil.enums.StatusChamado;
+import com.unifor.MedMaisFacil.model.*;
+import com.unifor.MedMaisFacil.utils.MetodosUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +15,8 @@ public class TotemServiceImpl implements TotemService {
     private final PacienteService pacienteService;
 
     private final ChamadoService chamadoService;
+
+    private final SinaisVitaisService sinaisVitaisService;
 
     @Override
     public TotemIdentificacao identificarPaciente(String cpf) {
@@ -30,6 +31,54 @@ public class TotemServiceImpl implements TotemService {
                         .build())
                 .toList();
 
-        return new TotemIdentificacao(pacienteEncontrado.getNome(), chamadosPendentes);
+        int idade = MetodosUtil.calcularIdade(pacienteEncontrado.getDataNascimento());
+
+        return new TotemIdentificacao(pacienteEncontrado.getNome(), idade, chamadosPendentes);
+    }
+
+    @Override
+    public SinaisVitais registrarSinaisVitais(Long chamadoId, SinaisVitais sinaisVitais) {
+        Chamado chamadoIdentificado = chamadoService.buscarChamadoById(chamadoId);
+
+        if (chamadoIdentificado.getStatusChamado() != StatusChamado.AGUARDANDO_TRIAGEM) {
+            throw new IllegalStateException("Este chamado não está aguardando triagem (status atual: " + chamadoIdentificado.getStatusChamado() + ")");
+        }
+
+        SinaisVitais sinaisVitaisParaSalvar = sinaisVitais.toBuilder()
+                .chamado(chamadoIdentificado)
+                .build();
+
+
+
+        return sinaisVitaisService.salvarSinaisVitais(sinaisVitaisParaSalvar);
+    }
+
+    @Override
+    public TotemCheckin finalizarCheckIn(Long chamadoId) {
+        Chamado chamadoIdentificado = chamadoService.buscarChamadoById(chamadoId);
+
+        if (chamadoIdentificado.getStatusChamado() != StatusChamado.AGUARDANDO_TRIAGEM) {
+            throw new IllegalStateException("Chamado não está aguardando triagem (status atual:  + " + chamadoIdentificado.getStatusChamado() + " + )");
+        }
+
+        if (chamadoIdentificado.getSinaisVitais() == null) {
+            throw new IllegalStateException("Sinais vitais ainda não foram capturados para este chamado");
+        }
+
+        Chamado chamadoComAlteracoesSalvas = chamadoService.salvarAlteracoes(chamadoIdentificado.toBuilder()
+                .statusChamado(StatusChamado.EM_FILA)
+                .senhaFila(gerarSenhaFila())
+                .build());
+
+        return new TotemCheckin(
+                chamadoComAlteracoesSalvas.getSenhaFila(),
+                chamadoComAlteracoesSalvas.getPrioridadeChamado()
+        );
+    }
+
+
+    private String gerarSenhaFila() {
+        long totalChamados = 0;
+        return "P" + (totalChamados + 1);
     }
 }

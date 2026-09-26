@@ -12,6 +12,7 @@ public class TotemMapperImpl implements TotemMapper {
     public TotemIdentificacaoResponseDTO toDTO(TotemIdentificacao model) {
         return new TotemIdentificacaoResponseDTO(
                 model.getNomePaciente(),
+                model.getIdade(),
                 model.getChamadosPendentes() != null ? model.getChamadosPendentes().stream().map(
                         chamadoPendente -> new ChamadoPendenteResponseDTO(
                                 chamadoPendente.getChamadoId(),

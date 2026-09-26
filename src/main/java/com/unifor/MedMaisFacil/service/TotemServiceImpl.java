@@ -18,6 +18,8 @@ public class TotemServiceImpl implements TotemService {
 
     private final SinaisVitaisService sinaisVitaisService;
 
+    private final SenhaFilaService senhaFilaService;
+
     @Override
     public TotemIdentificacao identificarPaciente(String cpf) {
         Paciente pacienteEncontrado = pacienteService.buscarPacienteByCpf(cpf);
@@ -65,20 +67,16 @@ public class TotemServiceImpl implements TotemService {
             throw new IllegalStateException("Sinais vitais ainda não foram capturados para este chamado");
         }
 
+        String senhaGerada = senhaFilaService.gerarSenhaFila(chamadoIdentificado.getPrioridadeChamado());
+
         Chamado chamadoComAlteracoesSalvas = chamadoService.salvarAlteracoes(chamadoIdentificado.toBuilder()
                 .statusChamado(StatusChamado.EM_FILA)
-                .senhaFila(gerarSenhaFila())
+                .senhaFila(senhaGerada)
                 .build());
 
         return new TotemCheckin(
                 chamadoComAlteracoesSalvas.getSenhaFila(),
                 chamadoComAlteracoesSalvas.getPrioridadeChamado()
         );
-    }
-
-
-    private String gerarSenhaFila() {
-        long totalChamados = 0;
-        return "P" + (totalChamados + 1);
     }
 }

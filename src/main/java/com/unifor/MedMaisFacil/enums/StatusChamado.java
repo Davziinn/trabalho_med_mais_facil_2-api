@@ -5,5 +5,6 @@ public enum StatusChamado {
     EM_FILA,
     EM_ATENDIMENTO,
     FINALIZADO,
-    CANCELADO
+    CANCELADO,
+    EXPIRADO
 }

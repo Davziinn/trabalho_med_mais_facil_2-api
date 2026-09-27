@@ -72,6 +72,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .respostasFluxograma(dto.respostasFluxograma())
                 .latitudeAtual(dto.latitudeAtual())
                 .longitudeAtual(dto.longitudeAtual())
+                .confirmarNovoAtendimento(dto.confirmarNovoAtendimento())
                 .build();
     }
 

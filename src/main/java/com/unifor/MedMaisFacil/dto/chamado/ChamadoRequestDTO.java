@@ -10,5 +10,6 @@ public record ChamadoRequestDTO(
         @NotNull Map<String, Boolean> discriminadoresGerais,
         @NotNull Map<String, Object> respostasFluxograma,
         Double latitudeAtual,
-        Double longitudeAtual
+        Double longitudeAtual,
+        boolean confirmarNovoAtendimento
 ) {}

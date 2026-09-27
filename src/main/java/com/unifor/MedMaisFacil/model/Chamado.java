@@ -36,4 +36,6 @@ public class Chamado {
 
     private Double latitudeAtual;
     private Double longitudeAtual;
+
+    private boolean confirmarNovoAtendimento;
 }

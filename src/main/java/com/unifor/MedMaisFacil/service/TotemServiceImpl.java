@@ -23,6 +23,9 @@ public class TotemServiceImpl implements TotemService {
     @Override
     public TotemIdentificacao identificarPaciente(String cpf) {
         Paciente pacienteEncontrado = pacienteService.buscarPacienteByCpf(cpf);
+
+        chamadoService.expirarChamadosAntigosNaoUrgentes(pacienteEncontrado.getId());
+
         List<Chamado> chamadosPendentesDoPaciente = chamadoService.buscarChamadoByPacienteIdAndStatus(pacienteEncontrado.getId());
 
         List<ChamadoPendente> chamadosPendentes = chamadosPendentesDoPaciente.stream()

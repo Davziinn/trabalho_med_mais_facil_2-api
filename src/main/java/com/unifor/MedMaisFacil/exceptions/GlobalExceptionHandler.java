@@ -25,6 +25,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, httpStatus);
     }
 
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatusException(org.springframework.web.server.ResponseStatusException ex) {
+        return buildResponse(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getReason());
+    }
+
     @ExceptionHandler(PacienteNotFoundException.class)
     public ResponseEntity<Object> handlePacienteNotFoundException (PacienteNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());

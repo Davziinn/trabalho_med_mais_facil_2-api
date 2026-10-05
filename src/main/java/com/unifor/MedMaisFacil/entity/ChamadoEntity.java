@@ -43,6 +43,10 @@ public class ChamadoEntity {
     @JoinColumn(name = "paciente_id", nullable = false)
     private PacienteEntity paciente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unidade_saude_id")
+    private UnidadeSaudeEntity unidadeSaude;
+
     @OneToOne(mappedBy = "chamado", cascade = CascadeType.ALL)
     private SinaisVitaisEntity sinaisVitais;
 

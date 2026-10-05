@@ -24,6 +24,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
     public Chamado toModel(ChamadoEntity entity) {
         return Chamado.builder()
                 .id(entity.getId())
+                .unidadeSaude(entity.getUnidadeSaude() != null ? unidadeSaudeMapper.toModel(entity.getUnidadeSaude()) : null)
                 .prioridadeChamado(entity.getPrioridadeChamado())
                 .statusChamado(entity.getStatusChamado())
                 .senhaFila(entity.getSenhaFila())
@@ -40,6 +41,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
     public ChamadoEntity toEntity(Chamado model) {
         ChamadoEntity entity = ChamadoEntity.builder()
                 .id(model.getId())
+                .unidadeSaude(model.getUnidadeSaude() != null ? unidadeSaudeMapper.toEntity(model.getUnidadeSaude()) : null)
                 .prioridadeChamado(model.getPrioridadeChamado())
                 .statusChamado(model.getStatusChamado())
                 .senhaFila(model.getSenhaFila())

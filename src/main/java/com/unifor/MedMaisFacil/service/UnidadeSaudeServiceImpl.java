@@ -26,11 +26,8 @@ public class UnidadeSaudeServiceImpl implements UnidadeSaudeService {
                 .filter(unidade -> unidade.getSintomasAtendidos() != null && unidade.getSintomasAtendidos().contains(sintoma))
                 .map(unidade -> new UnidadeComDistancia(unidade, calcularDistanciaKm(latitudePaciente, longitudePaciente, unidade.getLatitude(), unidade.getLongitude())))
                 .min(Comparator.comparingDouble(UnidadeComDistancia::distanciaKm))
-                .map(maisProxima -> new UnidadeSaude(
-                        maisProxima.unidadeSaude().getNome(),
-                        maisProxima.unidadeSaude.getEndereco(),
-                        arredondar(maisProxima.distanciaKm())
-                ));
+                .map(maisProxima -> maisProxima.unidadeSaude().toBuilder()
+                        .distanciaKm(arredondar(maisProxima.distanciaKm())).build());
     }
 
     private record UnidadeComDistancia (UnidadeSaude unidadeSaude, double distanciaKm){}

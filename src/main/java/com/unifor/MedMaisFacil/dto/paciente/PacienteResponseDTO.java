@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record PacienteResponseDTO (
+        Long id,
         String nome,
         LocalDate dataNascimento,
         String sexo,

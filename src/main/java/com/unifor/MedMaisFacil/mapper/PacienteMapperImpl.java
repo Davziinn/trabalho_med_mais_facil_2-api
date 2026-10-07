@@ -94,6 +94,7 @@ public class PacienteMapperImpl implements PacienteMapper {
     @Override
     public PacienteResponseDTO toDTO(Paciente model) {
         return new PacienteResponseDTO(
+                model.getId(),
                 model.getNome(),
                 model.getDataNascimento(),
                 model.getSexo(),

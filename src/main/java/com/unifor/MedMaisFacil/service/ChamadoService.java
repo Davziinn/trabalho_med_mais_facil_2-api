@@ -3,6 +3,7 @@ package com.unifor.MedMaisFacil.service;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
 import com.unifor.MedMaisFacil.model.Chamado;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ChamadoService {
@@ -20,4 +21,6 @@ public interface ChamadoService {
     void expirarChamadosAntigosNaoUrgentes(Long pacienteId);
 
     List<Chamado> buscarPacienteByIdEByStatusOrdenandoByDataDecrescente(Long pacienteId, List<StatusChamado> status);
+
+    long contarChamadosAtivosApos (Long unidadeId, StatusChamado status, LocalDateTime apos);
 }

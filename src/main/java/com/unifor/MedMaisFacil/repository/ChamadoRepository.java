@@ -15,4 +15,6 @@ public interface ChamadoRepository extends JpaRepository<ChamadoEntity, Long> {
     List<ChamadoEntity> findByPaciente_IdAndStatusChamadoAndPrioridadeChamadoInAndDataCriacaoBefore(Long pacienteId, StatusChamado status, List<PrioridadeChamado> cores, LocalDateTime antesDe);
 
     List<ChamadoEntity> findByPaciente_IdAndStatusChamadoInOrderByDataCriacaoDesc(Long pacienteId, List<StatusChamado> status);
+
+    long countByUnidadeSaude_IdAndStatusChamadoAndDataCheckinAfter (Long unidadeid, StatusChamado status, LocalDateTime apos);
 }

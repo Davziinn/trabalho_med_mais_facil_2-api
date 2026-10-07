@@ -39,6 +39,9 @@ public class ChamadoEntity {
     @Column(name = "DT_CRI")
     private LocalDateTime dataCriacao;
 
+    @Column(name = "DT_CHECKIN")
+    private LocalDateTime dataCheckin;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", nullable = false)
     private PacienteEntity paciente;

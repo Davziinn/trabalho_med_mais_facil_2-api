@@ -2,6 +2,7 @@ package com.unifor.MedMaisFacil.controller;
 
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisRequestDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisResponseDTO;
+import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInRequestDTO;
 import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInResponseDTO;
 import com.unifor.MedMaisFacil.dto.totemidentificacao.TotemIdentificacaoResponseDTO;
 import com.unifor.MedMaisFacil.mapper.SinaisVitaisMapper;
@@ -42,7 +43,7 @@ public class TotemControllerImpl implements TotemController {
 
     @Override
     @PostMapping("/chamado/{chamadoId}/check-in")
-    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId) {
-        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId)));
+    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody TotemCheckInRequestDTO request) {
+        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId, request.unidadeSaudeId())));
     }
 }

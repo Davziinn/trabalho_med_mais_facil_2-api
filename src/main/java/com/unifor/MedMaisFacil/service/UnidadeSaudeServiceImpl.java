@@ -1,6 +1,7 @@
 package com.unifor.MedMaisFacil.service;
 
 import com.unifor.MedMaisFacil.enums.SintomaPrincipal;
+import com.unifor.MedMaisFacil.exceptions.UnidadeSaudeException;
 import com.unifor.MedMaisFacil.mapper.UnidadeSaudeMapper;
 import com.unifor.MedMaisFacil.model.UnidadeSaude;
 import com.unifor.MedMaisFacil.repository.UnidadeSaudeRepository;
@@ -16,7 +17,6 @@ public class UnidadeSaudeServiceImpl implements UnidadeSaudeService {
 
     private final UnidadeSaudeRepository unidadeSaudeRepository;
     private final UnidadeSaudeMapper unidadeSaudeMapper;
-
     private static final double RAIO_TERRA_KM = 6371.0;
 
     @Override
@@ -28,6 +28,13 @@ public class UnidadeSaudeServiceImpl implements UnidadeSaudeService {
                 .min(Comparator.comparingDouble(UnidadeComDistancia::distanciaKm))
                 .map(maisProxima -> maisProxima.unidadeSaude().toBuilder()
                         .distanciaKm(arredondar(maisProxima.distanciaKm())).build());
+    }
+
+    @Override
+    public UnidadeSaude buscarUnidadeSaudeById (Long id) {
+        return unidadeSaudeMapper.toModel(unidadeSaudeRepository.findById(id).orElseThrow(
+                () -> new UnidadeSaudeException("Unidade de saúde não encontrada")
+        ));
     }
 
     private record UnidadeComDistancia (UnidadeSaude unidadeSaude, double distanciaKm){}

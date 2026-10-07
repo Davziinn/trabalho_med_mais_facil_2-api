@@ -22,6 +22,7 @@ public class Chamado {
     private StatusChamado statusChamado;
     private PrioridadeChamado prioridadeChamado;
     private LocalDateTime dataCriacao;
+    private LocalDateTime dataCheckin;
     private Paciente paciente;
     private SinaisVitais sinaisVitais;
     private QuestionarioSintomas questionarioSintomas;

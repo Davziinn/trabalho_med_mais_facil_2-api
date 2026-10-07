@@ -22,6 +22,9 @@ public class UnidadeSaude {
     private Double longitude;
     private List<SintomaPrincipal> sintomasAtendidos;
 
+    private Integer limiteLotacao;
+    private Boolean lotado;
+
     public UnidadeSaude(String nome, String endereco, double distanciaKm) {
         this.nome = nome;
         this.endereco = endereco;

@@ -10,6 +10,7 @@ import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
 import com.unifor.MedMaisFacil.repository.ChamadoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChamadoServiceImpl implements ChamadoService {
+
+    @Value("${medmaisfacil.lotacao.janela-horas:3}")
+    private long janelaHoras;
 
     private final ChamadoRepository chamadoRepository;
     private final ChamadoMapper chamadoMapper;
@@ -109,18 +113,6 @@ public class ChamadoServiceImpl implements ChamadoService {
         chamadoRepository.deleteAll(chamado.stream().map(chamadoMapper::toEntity).toList());
     }
 
-    private UnidadeSaude buscarUnidadeSaudeRecomendada(Chamado chamado) {
-        if (chamado.getSintomaPrincipal() == null || chamado.getLatitudeAtual() == null || chamado.getLongitudeAtual() == null) {
-            return null;
-        }
-
-        return unidadeSaudeService.buscarUnidadeSaudeMaisProxima(
-                chamado.getSintomaPrincipal(),
-                chamado.getLatitudeAtual(),
-                chamado.getLongitudeAtual()
-        ).orElse(null);
-    }
-
     @Override
     public void expirarChamadosAntigosNaoUrgentes (Long pacienteId) {
         LocalDateTime limite24horas = LocalDateTime.now().minusHours(24);
@@ -136,6 +128,35 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Override
     public List<Chamado> buscarPacienteByIdEByStatusOrdenandoByDataDecrescente(Long pacienteId, List<StatusChamado> status) {
         return chamadoRepository.findByPaciente_IdAndStatusChamadoInOrderByDataCriacaoDesc(pacienteId, status).stream().map(chamadoMapper::toModel).toList();
+    }
+
+    @Override
+    public long contarChamadosAtivosApos(Long unidadeId, StatusChamado status, LocalDateTime apos) {
+        return chamadoRepository.countByUnidadeSaude_IdAndStatusChamadoAndDataCheckinAfter(unidadeId, status, apos);
+    }
+
+    private UnidadeSaude buscarUnidadeSaudeRecomendada(Chamado chamado) {
+        if (chamado.getSintomaPrincipal() == null || chamado.getLatitudeAtual() == null || chamado.getLongitudeAtual() == null) {
+            return null;
+        }
+
+        return unidadeSaudeService.buscarUnidadeSaudeMaisProxima(
+                chamado.getSintomaPrincipal(),
+                chamado.getLatitudeAtual(),
+                chamado.getLongitudeAtual()
+        ).map(unidade -> unidade.toBuilder().lotado(estaLotado(unidade)).build())
+                .orElse(null);
+    }
+
+    private boolean estaLotado (UnidadeSaude unidadeSaude) {
+        if (unidadeSaude == null) {
+            return false;
+        }
+
+        LocalDateTime inicioJanela = LocalDateTime.now().minusHours(janelaHoras);
+        long quantidadePacientesNaFila = contarChamadosAtivosApos(unidadeSaude.getId(), StatusChamado.EM_FILA, inicioJanela);
+
+        return quantidadePacientesNaFila >= unidadeSaude.getLimiteLotacao();
     }
 
 }

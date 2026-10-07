@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UnidadeSaudeService {
     Optional<UnidadeSaude> buscarUnidadeSaudeMaisProxima (SintomaPrincipal sintoma, Double latitudePaciente, Double longitudePaciente);
+
+    UnidadeSaude buscarUnidadeSaudeById (Long id);
 }

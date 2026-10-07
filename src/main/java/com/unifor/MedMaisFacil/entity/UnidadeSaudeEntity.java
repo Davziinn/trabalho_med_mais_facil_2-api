@@ -34,6 +34,9 @@ public class UnidadeSaudeEntity {
     @Column(name = "LONG_UNID", nullable = false)
     private Double longitude;
 
+    @Column(name = "LIM_LOTACAO")
+    private Integer limiteLotacao;
+
     @ElementCollection(targetClass = SintomaPrincipal.class)
     @CollectionTable(name = "TB_UNID_SINTO_ATENDI", joinColumns = @JoinColumn(name = "UNID_ID"))
     @Enumerated(EnumType.STRING)

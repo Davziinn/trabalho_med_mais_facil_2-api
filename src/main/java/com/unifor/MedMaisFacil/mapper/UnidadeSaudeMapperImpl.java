@@ -17,6 +17,7 @@ public class UnidadeSaudeMapperImpl implements UnidadeSaudeMapper {
                 .latitude(entity.getLatitude())
                 .longitude(entity.getLongitude())
                 .sintomasAtendidos(entity.getSintomasAtendidos())
+                .limiteLotacao(entity.getLimiteLotacao())
                 .build();
     }
 
@@ -29,6 +30,7 @@ public class UnidadeSaudeMapperImpl implements UnidadeSaudeMapper {
                 .latitude(model.getLatitude())
                 .longitude(model.getLongitude())
                 .sintomasAtendidos(model.getSintomasAtendidos())
+                .limiteLotacao(model.getLimiteLotacao())
                 .build();
     }
 
@@ -37,7 +39,8 @@ public class UnidadeSaudeMapperImpl implements UnidadeSaudeMapper {
         return new UnidadeSaudeResponseDTO(
                 model.getNome(),
                 model.getEndereco(),
-                model.getDistanciaKm()
+                model.getDistanciaKm(),
+                model.getLotado()
         );
     }
 }

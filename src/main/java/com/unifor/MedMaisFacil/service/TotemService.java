@@ -10,5 +10,5 @@ public interface TotemService {
 
     SinaisVitais registrarSinaisVitais (Long chamadoId, SinaisVitais sinaisVitais);
 
-    TotemCheckin finalizarCheckIn (Long chamadoId);
+    TotemCheckin finalizarCheckIn (Long chamadoId, Long unidadeSaudeId);
 }

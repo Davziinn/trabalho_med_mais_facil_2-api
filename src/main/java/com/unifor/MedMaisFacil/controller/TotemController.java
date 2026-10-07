@@ -2,6 +2,7 @@ package com.unifor.MedMaisFacil.controller;
 
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisRequestDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisResponseDTO;
+import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInRequestDTO;
 import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInResponseDTO;
 import com.unifor.MedMaisFacil.dto.totemidentificacao.TotemIdentificacaoResponseDTO;
 import jakarta.validation.Valid;
@@ -20,5 +21,5 @@ public interface TotemController {
     ResponseEntity<SinaisVitaisResponseDTO> registrarSinaisVitais (@PathVariable Long chamadoId, @Valid @RequestBody SinaisVitaisRequestDTO dto);
 
     @PostMapping("/chamado/{chamadoId}/check-in")
-    ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId);
+    ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody TotemCheckInRequestDTO request);
 }

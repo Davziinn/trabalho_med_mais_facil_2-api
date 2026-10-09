@@ -1,7 +1,10 @@
 package com.unifor.MedMaisFacil.service;
 
+import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
+import com.unifor.MedMaisFacil.enums.SintomaPrincipal;
 import com.unifor.MedMaisFacil.enums.StatusChamado;
 import com.unifor.MedMaisFacil.model.*;
+import com.unifor.MedMaisFacil.model.classificacao.AvaliacaoSinaisVitais;
 import com.unifor.MedMaisFacil.utils.MetodosUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,11 +55,11 @@ public class TotemServiceImpl implements TotemService {
             throw new IllegalStateException("Este chamado não está aguardando triagem (status atual: " + chamadoIdentificado.getStatusChamado() + ")");
         }
 
+        Chamado chamadoAtualizado = recalcularPrioridade(chamadoIdentificado, sinaisVitais);
+
         SinaisVitais sinaisVitaisParaSalvar = sinaisVitais.toBuilder()
-                .chamado(chamadoIdentificado)
+                .chamado(chamadoAtualizado)
                 .build();
-
-
 
         return sinaisVitaisService.salvarSinaisVitais(sinaisVitaisParaSalvar);
     }
@@ -88,5 +91,24 @@ public class TotemServiceImpl implements TotemService {
                 chamadoComAlteracoesSalvas.getSenhaFila(),
                 chamadoComAlteracoesSalvas.getPrioridadeChamado()
         );
+    }
+
+    private Chamado recalcularPrioridade (Chamado chamado, SinaisVitais sinais) {
+        Paciente pacienteConsultado = pacienteService.buscarPacienteById(chamado.getPaciente().getId());
+
+        if (MetodosUtil.calcularIdade(pacienteConsultado.getDataNascimento()) < 18) {
+            return chamado;
+        }
+
+        SintomaPrincipal sintomaPrincipal = chamado.getQuestionarioSintomas().getSintomaPrincipal();
+
+        PrioridadeChamado minima = AvaliacaoSinaisVitais.prioridadeMinima(sinais, sintomaPrincipal);
+        PrioridadeChamado nova = AvaliacaoSinaisVitais.escalar(chamado.getPrioridadeChamado(), minima);
+
+        if (nova == chamado.getPrioridadeChamado()) {
+            return chamado;
+        }
+
+        return chamadoService.salvarAlteracoes(chamado.toBuilder().prioridadeChamado(nova).build());
     }
 }

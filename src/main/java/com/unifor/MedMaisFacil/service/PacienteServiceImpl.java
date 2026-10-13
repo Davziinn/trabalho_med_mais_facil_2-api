@@ -43,4 +43,11 @@ public class PacienteServiceImpl implements PacienteService {
                 () -> new PacienteNotFoundException("Paciente não encontrado")
         ));
     }
+
+    @Override
+    public Paciente buscarPacienteByEmail(String email) {
+        return pacienteMapper.toModel(pacienteRepository.findByEmail(email).orElseThrow(
+                () -> new PacienteNotFoundException("Paciente não encontrado")
+        ));
+    }
 }

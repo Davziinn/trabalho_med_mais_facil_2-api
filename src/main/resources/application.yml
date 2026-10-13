@@ -17,3 +17,7 @@ spring:
 medmaisfacil:
   lotacao:
     janela-hora: 3
+
+jwt:
+  secret: aB7xK9mQ2vL5nR8pT4wY6zF1hJ3cD0sE
+  expiration-minutes: 15

@@ -14,7 +14,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final PacienteService pacienteService;
 
     @Override
-    public UserDetails loadUserByUsername(@NonNull String cpf) throws UsernameNotFoundException {
-        return pacienteService.buscarPacienteByCpf(cpf);
+    public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
+        return pacienteService.buscarPacienteByEmail(email);
     }
 }

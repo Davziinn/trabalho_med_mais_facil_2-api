@@ -8,4 +8,6 @@ public interface PacienteService {
     Paciente buscarPacienteById (Long id);
 
     Paciente buscarPacienteByCpf (String cpf);
+
+    Paciente buscarPacienteByEmail (String email);
 }

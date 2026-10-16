@@ -1,5 +1,6 @@
 package com.unifor.MedMaisFacil.service.security;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,5 +43,19 @@ public class JwtServiceImpl implements JwtService {
                 .getPayload()
                 .getSubject();
         return Long.valueOf(subject);
+    }
+
+    @Override
+    public boolean isValidToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.unifor.MedMaisFacil.dto.paciente.CadastroPacienteResponseDTO;
 import com.unifor.MedMaisFacil.dto.paciente.PacienteResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +23,8 @@ public interface PacienteController {
     @GetMapping("/{cpf}")
     ResponseEntity<PacienteResponseDTO> identificacaoPaciente (@PathVariable String cpf);
 
-    @GetMapping("/{pacienteId}/historico")
-    ResponseEntity<List<HistoricoChamadoResumoDTO>> listarHistorico (@PathVariable Long pacienteId);
+    @GetMapping("/me/historico")
+    ResponseEntity<List<HistoricoChamadoResumoDTO>> listarHistorico (@AuthenticationPrincipal Long pacienteId);
 
     @GetMapping("/{pacienteId}/historico/{chamadoId}")
     ResponseEntity<HistoricoChamadoDetalheDTO> detalharHistorico (@PathVariable Long pacienteId, @PathVariable Long chamadoId);

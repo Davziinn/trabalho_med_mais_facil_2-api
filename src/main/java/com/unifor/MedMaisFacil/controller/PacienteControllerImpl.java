@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,8 +47,8 @@ public class PacienteControllerImpl implements PacienteController{
     }
 
     @Override
-    @GetMapping("/{pacienteId}/historico")
-    public ResponseEntity<List<HistoricoChamadoResumoDTO>> listarHistorico (@PathVariable Long pacienteId) {
+    @GetMapping("/me/historico")
+    public ResponseEntity<List<HistoricoChamadoResumoDTO>> listarHistorico (@AuthenticationPrincipal Long pacienteId) {
         List<HistoricoChamadoResumo> historicoListado = historicoService.listarHistorico(pacienteId);
         return ResponseEntity.ok(historicoListado.stream().map(historicoMapper::toResumoDTO).toList());
     }

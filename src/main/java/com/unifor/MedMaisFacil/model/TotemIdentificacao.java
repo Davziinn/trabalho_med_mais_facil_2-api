@@ -13,6 +13,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class TotemIdentificacao {
 
+    private Long pacienteId;
     private String nomePaciente;
     private int idade;
     private List<ChamadoPendente> chamadosPendentes;

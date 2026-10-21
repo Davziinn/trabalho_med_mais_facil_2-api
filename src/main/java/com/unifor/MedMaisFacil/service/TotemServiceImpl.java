@@ -44,7 +44,7 @@ public class TotemServiceImpl implements TotemService {
 
         int idade = MetodosUtil.calcularIdade(pacienteEncontrado.getDataNascimento());
 
-        return new TotemIdentificacao(pacienteEncontrado.getNome(), idade, chamadosPendentes);
+        return new TotemIdentificacao(pacienteEncontrado.getId(), pacienteEncontrado.getNome(), idade, chamadosPendentes);
     }
 
     @Override

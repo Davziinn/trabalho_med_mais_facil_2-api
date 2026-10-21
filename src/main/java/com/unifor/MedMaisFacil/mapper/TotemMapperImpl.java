@@ -11,6 +11,7 @@ public class TotemMapperImpl implements TotemMapper {
     @Override
     public TotemIdentificacaoResponseDTO toDTO(TotemIdentificacao model) {
         return new TotemIdentificacaoResponseDTO(
+                model.getPacienteId(),
                 model.getNomePaciente(),
                 model.getIdade(),
                 model.getChamadosPendentes() != null ? model.getChamadosPendentes().stream().map(

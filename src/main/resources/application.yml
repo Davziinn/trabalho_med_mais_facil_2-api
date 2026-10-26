@@ -6,10 +6,16 @@ spring:
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      # Carrega as unidades de saúde do data.sql a cada start (o Postgres não roda por padrão)
+      mode: always
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
+    # Roda o data.sql depois que o Hibernate cria as tabelas
+    defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

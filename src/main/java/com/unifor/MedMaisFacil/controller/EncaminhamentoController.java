@@ -8,19 +8,25 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Comparator;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
 public class EncaminhamentoController {
     private final UnidadeSaudeRepository unidades;
     private final ChamadoRepository chamados;
+    @Value("${medmaisfacil.lotacao.janela-horas:3}")
+    private int janelaLotacaoHoras;
 
-    public record Hospital(Long id, String nome, String endereco, Double distanciaKm) {}
+    public record Hospital(Long id, String nome, String endereco, Double distanciaKm,
+                           Integer ocupacaoAtual, Integer limiteLotacao,
+                           Integer ocupacaoPercentual, Boolean lotada) {}
     public record Selecao(@NotNull Long unidadeSaudeId) {}
     public record CheckIn(Long chamadoId, Hospital hospital, String qrCode) {}
 
@@ -36,9 +42,17 @@ public class EncaminhamentoController {
         }
         return unidades.findAll().stream()
                 .filter(u -> u.getSintomasAtendidos() != null && u.getSintomasAtendidos().contains(sintoma))
-                .map(u -> new Hospital(u.getId(), u.getNome(), u.getEndereco(),
-                        latitude == null || u.getLatitude() == null || u.getLongitude() == null ? null :
-                                distancia(latitude, longitude, u.getLatitude(), u.getLongitude())))
+                .map(u -> {
+                    int ocupacaoAtual = (int) chamados.countByUnidadeSaude_IdAndStatusChamadoAndDataCheckinAfter(
+                            u.getId(), StatusChamado.EM_FILA, LocalDateTime.now().minusHours(janelaLotacaoHoras));
+                    Integer limite = u.getLimiteLotacao();
+                    Integer percentual = limite == null || limite <= 0 ? null : (int) Math.round(ocupacaoAtual * 100.0 / limite);
+                    boolean lotada = percentual != null && ocupacaoAtual >= limite;
+                    Double distanciaKm = latitude == null || u.getLatitude() == null || u.getLongitude() == null ? null :
+                            distancia(latitude, longitude, u.getLatitude(), u.getLongitude());
+                    return new Hospital(u.getId(), u.getNome(), u.getEndereco(), distanciaKm,
+                            ocupacaoAtual, limite, percentual, lotada);
+                })
                 .sorted(Comparator.comparing(Hospital::distanciaKm, Comparator.nullsLast(Double::compareTo))
                         .thenComparing(Hospital::nome))
                 .toList();
@@ -65,7 +79,8 @@ public class EncaminhamentoController {
         chamado.setUnidadeSaude(unidade);
         chamados.save(chamado);
         // Identificador de apresentação. A entrada na fila continua sendo confirmada no totem.
-        return new CheckIn(chamadoId, new Hospital(unidade.getId(), unidade.getNome(), unidade.getEndereco(), null),
+        return new CheckIn(chamadoId, new Hospital(unidade.getId(), unidade.getNome(), unidade.getEndereco(), null,
+                null, unidade.getLimiteLotacao(), null, null),
                 "medmaisfacil:checkin:v1:" + chamadoId + ":" + unidade.getId());
     }
 

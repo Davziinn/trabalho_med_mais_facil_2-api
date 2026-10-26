@@ -7,7 +7,9 @@ import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.AvaliacaoSinaisVitais;
 import com.unifor.MedMaisFacil.utils.MetodosUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +41,7 @@ public class TotemServiceImpl implements TotemService {
                         .chamadoId(chamado.getId())
                         .sintomaPrincipal(chamado.getQuestionarioSintomas().getSintomaPrincipal())
                         .dataCriacao(chamado.getDataCriacao())
+                        .prioridadeChamado(chamado.getPrioridadeChamado())
                         .build())
                 .toList();
 
@@ -76,7 +79,14 @@ public class TotemServiceImpl implements TotemService {
             throw new IllegalStateException("Sinais vitais ainda não foram capturados para este chamado");
         }
 
-        UnidadeSaude unidadeConsultada = unidadeSaudeService.buscarUnidadeSaudeById(unidadeSaudeId);
+        UnidadeSaude unidadeConsultada;
+        if (unidadeSaudeId != null) {
+            unidadeConsultada = unidadeSaudeService.buscarUnidadeSaudeById(unidadeSaudeId);
+        } else if (chamadoIdentificado.getUnidadeSaude() != null) {
+            unidadeConsultada = chamadoIdentificado.getUnidadeSaude();
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe a unidade de saúde do totem para finalizar o check-in");
+        }
 
         String senhaGerada = senhaFilaService.gerarSenhaFila(chamadoIdentificado.getPrioridadeChamado());
 

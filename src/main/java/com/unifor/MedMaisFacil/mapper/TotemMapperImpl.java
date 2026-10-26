@@ -18,7 +18,8 @@ public class TotemMapperImpl implements TotemMapper {
                         chamadoPendente -> new ChamadoPendenteResponseDTO(
                                 chamadoPendente.getChamadoId(),
                                 chamadoPendente.getSintomaPrincipal(),
-                                chamadoPendente.getDataCriacao()
+                                chamadoPendente.getDataCriacao(),
+                                chamadoPendente.getPrioridadeChamado()
                         )
                 ).toList() : null
         );

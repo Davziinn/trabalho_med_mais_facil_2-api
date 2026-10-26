@@ -1,14 +1,19 @@
 package com.unifor.MedMaisFacil.controller;
 
+import com.unifor.MedMaisFacil.dto.chamado.ChamadoRequestDTO;
+import com.unifor.MedMaisFacil.dto.chamado.ChamadoResponseDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisRequestDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisResponseDTO;
 import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInRequestDTO;
 import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInResponseDTO;
 import com.unifor.MedMaisFacil.dto.totemidentificacao.TotemIdentificacaoResponseDTO;
+import com.unifor.MedMaisFacil.mapper.ChamadoMapper;
 import com.unifor.MedMaisFacil.mapper.SinaisVitaisMapper;
 import com.unifor.MedMaisFacil.mapper.TotemChekInMapper;
 import com.unifor.MedMaisFacil.mapper.TotemMapper;
+import com.unifor.MedMaisFacil.model.Chamado;
 import com.unifor.MedMaisFacil.model.SinaisVitais;
+import com.unifor.MedMaisFacil.service.ChamadoService;
 import com.unifor.MedMaisFacil.service.TotemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +33,21 @@ public class TotemControllerImpl implements TotemController {
 
     private final TotemChekInMapper totemChekInMapper;
 
+    private final ChamadoService chamadoService;
+
+    private final ChamadoMapper chamadoMapper;
+
     @Override
     @GetMapping("/{cpf}/identificacao")
     public ResponseEntity<TotemIdentificacaoResponseDTO> identificarPaciente(@PathVariable String cpf) {
         return ResponseEntity.ok(totemMapper.toDTO(totemService.identificarPaciente(cpf)));
+    }
+
+    @Override
+    @PostMapping("/{pacienteId}/chamado")
+    public ResponseEntity<ChamadoResponseDTO> criarChamado (@PathVariable Long pacienteId, @Valid @RequestBody ChamadoRequestDTO dto) {
+        Chamado chamadoCriado = chamadoService.criarChamado(pacienteId, chamadoMapper.toModel(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(chamadoMapper.toDTO(chamadoCriado));
     }
 
     @Override
@@ -43,7 +59,8 @@ public class TotemControllerImpl implements TotemController {
 
     @Override
     @PostMapping("/chamado/{chamadoId}/check-in")
-    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody TotemCheckInRequestDTO request) {
-        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId, request.unidadeSaudeId())));
+    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody(required = false) TotemCheckInRequestDTO request) {
+        Long unidadeSaudeId = request != null ? request.unidadeSaudeId() : null;
+        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId, unidadeSaudeId)));
     }
 }

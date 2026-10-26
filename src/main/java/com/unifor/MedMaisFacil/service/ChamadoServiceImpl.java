@@ -110,7 +110,9 @@ public class ChamadoServiceImpl implements ChamadoService {
 
     @Override
     public void deletarTudo(List<Chamado> chamado) {
-        chamadoRepository.deleteAll(chamado.stream().map(chamadoMapper::toEntity).toList());
+        chamadoRepository.deleteAllById(chamado.stream().map(Chamado::getId).toList());
+        // Executa o DELETE já: senão o cascade de PacienteEntity.chamados re-persiste o chamado ao carregar o paciente
+        chamadoRepository.flush();
     }
 
     @Override

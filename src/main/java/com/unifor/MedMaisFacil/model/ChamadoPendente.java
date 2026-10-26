@@ -1,5 +1,6 @@
 package com.unifor.MedMaisFacil.model;
 
+import com.unifor.MedMaisFacil.enums.PrioridadeChamado;
 import com.unifor.MedMaisFacil.enums.SintomaPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +18,5 @@ public class ChamadoPendente {
     private Long chamadoId;
     private SintomaPrincipal sintomaPrincipal;
     private LocalDateTime dataCriacao;
+    private PrioridadeChamado prioridadeChamado;
 }

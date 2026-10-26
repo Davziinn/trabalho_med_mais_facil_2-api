@@ -21,11 +21,8 @@ public class HistoricoServiceImpl implements HistoricoService{
 
     private final SintomaService sintomaService;
 
-    private static final List<StatusChamado> STATUS_HISTORICO = List.of(
-            StatusChamado.FINALIZADO,
-            StatusChamado.CANCELADO,
-            StatusChamado.EXPIRADO
-    );
+    // Inclui chamados em andamento: nenhum fluxo ainda marca FINALIZADO/CANCELADO
+    private static final List<StatusChamado> STATUS_HISTORICO = List.of(StatusChamado.values());
 
     @Override
     public List<HistoricoChamadoResumo> listarHistorico(Long pacienteId) {
@@ -34,7 +31,7 @@ public class HistoricoServiceImpl implements HistoricoService{
                 .map(chamado -> {
                     return new HistoricoChamadoResumo(
                             chamado.getId(),
-                            chamado.getSintomaPrincipal(),
+                            chamado.getQuestionarioSintomas().getSintomaPrincipal(),
                             chamado.getDataCriacao(),
                             chamado.getPrioridadeChamado(),
                             chamado.getStatusChamado()

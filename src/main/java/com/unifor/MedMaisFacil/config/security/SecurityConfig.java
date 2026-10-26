@@ -34,7 +34,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.POST, "/v1/auth/login", "/v1/paciente").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/v1/totem/*/identificacao").permitAll()
+                                // O totem é um terminal físico do hospital e não tem login de paciente
+                                .requestMatchers("/v1/totem/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v1/sintoma", "/v1/sintoma/*/perguntas").permitAll()
+                                .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

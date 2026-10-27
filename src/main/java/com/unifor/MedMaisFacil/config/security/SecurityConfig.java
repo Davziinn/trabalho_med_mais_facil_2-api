@@ -1,6 +1,7 @@
 package com.unifor.MedMaisFacil.config.security;
 
 import com.unifor.MedMaisFacil.service.security.JwtAuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,9 +33,11 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                )
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.POST, "/v1/auth/login", "/v1/paciente").permitAll()
-                                // O totem é um terminal físico do hospital e não tem login de paciente
                                 .requestMatchers("/v1/totem/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/v1/sintoma", "/v1/sintoma/*/perguntas").permitAll()
                                 .requestMatchers("/error").permitAll()

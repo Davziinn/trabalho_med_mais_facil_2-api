@@ -12,7 +12,7 @@ spring:
       mode: always
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     # Roda o data.sql depois que o Hibernate cria as tabelas
     defer-datasource-initialization: true

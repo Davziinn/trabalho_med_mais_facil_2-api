@@ -85,6 +85,8 @@ public class TotemServiceImpl implements TotemService {
         } else if (chamadoIdentificado.getUnidadeSaude() != null) {
             unidadeConsultada = chamadoIdentificado.getUnidadeSaude();
         } else {
+
+            //LEMBRAR PARA CORRIGIR NA QUINTA
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe a unidade de saúde do totem para finalizar o check-in");
         }
 

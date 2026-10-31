@@ -6,6 +6,7 @@ import com.unifor.MedMaisFacil.enums.StatusChamado;
 import com.unifor.MedMaisFacil.model.*;
 import com.unifor.MedMaisFacil.model.classificacao.AvaliacaoSinaisVitais;
 import com.unifor.MedMaisFacil.utils.MetodosUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,7 @@ public class TotemServiceImpl implements TotemService {
     }
 
     @Override
+    @Transactional
     public TotemCheckin finalizarCheckIn(Long chamadoId, Long unidadeSaudeId) {
         Chamado chamadoIdentificado = chamadoService.buscarChamadoById(chamadoId);
 
@@ -79,15 +81,11 @@ public class TotemServiceImpl implements TotemService {
             throw new IllegalStateException("Sinais vitais ainda não foram capturados para este chamado");
         }
 
-        UnidadeSaude unidadeConsultada;
-        if (unidadeSaudeId != null) {
-            unidadeConsultada = unidadeSaudeService.buscarUnidadeSaudeById(unidadeSaudeId);
-        } else if (chamadoIdentificado.getUnidadeSaude() != null) {
-            unidadeConsultada = chamadoIdentificado.getUnidadeSaude();
-        } else {
+        UnidadeSaude unidadeDoTotem = unidadeSaudeService.buscarUnidadeSaudeById(unidadeSaudeId);
 
-            //LEMBRAR PARA CORRIGIR NA QUINTA
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe a unidade de saúde do totem para finalizar o check-in");
+        SintomaPrincipal sintoma = chamadoIdentificado.getQuestionarioSintomas().getSintomaPrincipal();
+        if (unidadeDoTotem.getSintomasAtendidos() == null || !unidadeDoTotem.getSintomasAtendidos().contains(sintoma)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta unidade não atende o sintoma informado. Procure a recepção.");
         }
 
         String senhaGerada = senhaFilaService.gerarSenhaFila(chamadoIdentificado.getPrioridadeChamado());
@@ -95,7 +93,7 @@ public class TotemServiceImpl implements TotemService {
         Chamado chamadoComAlteracoesSalvas = chamadoService.salvarAlteracoes(chamadoIdentificado.toBuilder()
                 .statusChamado(StatusChamado.EM_FILA)
                 .senhaFila(senhaGerada)
-                .unidadeSaude(unidadeConsultada)
+                .unidadeSaude(unidadeDoTotem)
                 .dataCheckin(LocalDateTime.now())
                 .build());
 

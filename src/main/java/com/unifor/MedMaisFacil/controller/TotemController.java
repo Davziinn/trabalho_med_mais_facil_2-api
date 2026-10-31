@@ -4,11 +4,12 @@ import com.unifor.MedMaisFacil.dto.chamado.ChamadoRequestDTO;
 import com.unifor.MedMaisFacil.dto.chamado.ChamadoResponseDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisRequestDTO;
 import com.unifor.MedMaisFacil.dto.sinaisvitais.SinaisVitaisResponseDTO;
-import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInRequestDTO;
 import com.unifor.MedMaisFacil.dto.totemcheckin.TotemCheckInResponseDTO;
 import com.unifor.MedMaisFacil.dto.totemidentificacao.TotemIdentificacaoResponseDTO;
+import com.unifor.MedMaisFacil.service.security.TotemPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,5 +27,5 @@ public interface TotemController {
     ResponseEntity<SinaisVitaisResponseDTO> registrarSinaisVitais (@PathVariable Long chamadoId, @Valid @RequestBody SinaisVitaisRequestDTO dto);
 
     @PostMapping("/chamado/{chamadoId}/check-in")
-    ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody(required = false) TotemCheckInRequestDTO request);
+    ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @AuthenticationPrincipal TotemPrincipal totem);
 }

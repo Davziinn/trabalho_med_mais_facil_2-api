@@ -1,6 +1,7 @@
 package com.unifor.MedMaisFacil.config.security;
 
 import com.unifor.MedMaisFacil.service.security.JwtAuthFilter;
+import com.unifor.MedMaisFacil.service.security.TotemKeyFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,9 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
+    @Autowired
+    private TotemKeyFilter totemKeyFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) {
         http
@@ -38,11 +42,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.POST, "/v1/auth/login", "/v1/paciente").permitAll()
-                                .requestMatchers("/v1/totem/**").permitAll()
+                                .requestMatchers("/v1/totem/**").hasRole("TOTEM")
                                 .requestMatchers(HttpMethod.GET, "/v1/sintoma", "/v1/sintoma/*/perguntas").permitAll()
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(totemKeyFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

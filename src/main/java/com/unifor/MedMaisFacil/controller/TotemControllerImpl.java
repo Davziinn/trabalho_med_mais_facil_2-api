@@ -15,10 +15,12 @@ import com.unifor.MedMaisFacil.model.Chamado;
 import com.unifor.MedMaisFacil.model.SinaisVitais;
 import com.unifor.MedMaisFacil.service.ChamadoService;
 import com.unifor.MedMaisFacil.service.TotemService;
+import com.unifor.MedMaisFacil.service.security.TotemPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,8 +61,7 @@ public class TotemControllerImpl implements TotemController {
 
     @Override
     @PostMapping("/chamado/{chamadoId}/check-in")
-    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @Valid @RequestBody(required = false) TotemCheckInRequestDTO request) {
-        Long unidadeSaudeId = request != null ? request.unidadeSaudeId() : null;
-        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId, unidadeSaudeId)));
+    public ResponseEntity<TotemCheckInResponseDTO> finalizarCheckIn(@PathVariable Long chamadoId, @AuthenticationPrincipal TotemPrincipal totem) {
+        return ResponseEntity.ok(totemChekInMapper.toDTO(totemService.finalizarCheckIn(chamadoId, totem.unidadeSaudeId())));
     }
 }

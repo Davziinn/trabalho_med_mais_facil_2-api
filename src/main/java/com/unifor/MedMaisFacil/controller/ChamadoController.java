@@ -7,10 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ChamadoController {
 
     @PostMapping
     ResponseEntity<ChamadoResponseDTO> criarChamado (@AuthenticationPrincipal Long pacienteId, @Valid @RequestBody ChamadoRequestDTO dto);
+
+    @PutMapping("/paciente/{pacienteId}/chamado/{chamadoId}/cancelar")
+    ResponseEntity<Void> cancelarChamado (@PathVariable Long pacienteId, @PathVariable Long chamadoId);
 }

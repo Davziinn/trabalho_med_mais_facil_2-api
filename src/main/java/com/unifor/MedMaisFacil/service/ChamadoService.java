@@ -23,4 +23,6 @@ public interface ChamadoService {
     List<Chamado> buscarPacienteByIdEByStatusOrdenandoByDataDecrescente(Long pacienteId, List<StatusChamado> status);
 
     long contarChamadosAtivosApos (Long unidadeId, StatusChamado status, LocalDateTime apos);
+
+    void cancelar(Long pacienteId, Long chamadoId);
 }

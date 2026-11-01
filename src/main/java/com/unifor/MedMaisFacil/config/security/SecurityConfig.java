@@ -42,8 +42,9 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.POST, "/v1/auth/login", "/v1/paciente").permitAll()
-                                .requestMatchers("/v1/totem/**").hasRole("TOTEM")
                                 .requestMatchers(HttpMethod.GET, "/v1/sintoma", "/v1/sintoma/*/perguntas").permitAll()
+                                .requestMatchers("/v1/totem/**").hasRole("TOTEM")
+                                .requestMatchers(HttpMethod.PUT, "/v1/chamado/me/paciente/*/chamado/*/cancelar").hasRole("TOTEM")
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

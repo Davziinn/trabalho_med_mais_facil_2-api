@@ -24,8 +24,11 @@ public class TotemKeyFilter extends OncePerRequestFilter {
     private final TotemDispositivoService totemDispositivoService;
 
     @Override
-    protected boolean shouldNotFilter (HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/v1/totem/");
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        boolean totem = path.startsWith("/v1/totem/")
+                || path.matches("^/v1/chamado/me/paciente/\\d+/chamado/\\d+/cancelar$");
+        return !totem;
     }
 
     @Override

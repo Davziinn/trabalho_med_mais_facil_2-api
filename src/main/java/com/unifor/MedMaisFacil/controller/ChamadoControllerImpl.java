@@ -13,18 +13,25 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-// Isso fui eu? que macaquisse que eu fiz, era pra ser "/v1/chamado"
-// Alterar depois (alinhar antes com os fronts enders)
-@RequestMapping("/v1/paciente/me/chamado")
+@RequestMapping("/v1/chamado/me")
 @RequiredArgsConstructor
-public class ChamadoControllerImpl implements ChamadoController{
+public class ChamadoControllerImpl implements ChamadoController {
 
     private final ChamadoMapper chamadoMapper;
     private final ChamadoService chamadoService;
 
     @PostMapping
+    @Override
     public ResponseEntity<ChamadoResponseDTO> criarChamado (@AuthenticationPrincipal Long pacienteId, @Valid @RequestBody ChamadoRequestDTO dto) {
         Chamado chamadoCriado = chamadoService.criarChamado(pacienteId, chamadoMapper.toModel(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(chamadoMapper.toDTO(chamadoCriado));
+    }
+
+    @PutMapping("/paciente/{pacienteId}/chamado/{chamadoId}/cancelar")
+    @Override
+    public ResponseEntity<Void> cancelarChamado(@PathVariable Long pacienteId,
+                                                @PathVariable Long chamadoId) {
+        chamadoService.cancelar(pacienteId, chamadoId);
+        return ResponseEntity.noContent().build();
     }
 }

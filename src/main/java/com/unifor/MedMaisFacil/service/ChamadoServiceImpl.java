@@ -11,11 +11,15 @@ import com.unifor.MedMaisFacil.model.classificacao.ProtocoloManchester;
 import com.unifor.MedMaisFacil.repository.ChamadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,11 @@ public class ChamadoServiceImpl implements ChamadoService {
     private final UnidadeSaudeService unidadeSaudeService;
 
     private static final List<PrioridadeChamado> CORES_NAO_URGENTES = List.of(PrioridadeChamado.VERDE, PrioridadeChamado.AZUL);
+
+    private static final Set<StatusChamado> NAO_CANCELAVEIS = EnumSet.of(
+            StatusChamado.CANCELADO,
+            StatusChamado.EXPIRADO
+    );
 
     @Override
     @Transactional
@@ -111,7 +120,6 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Override
     public void deletarTudo(List<Chamado> chamado) {
         chamadoRepository.deleteAllById(chamado.stream().map(Chamado::getId).toList());
-        // Executa o DELETE já: senão o cascade de PacienteEntity.chamados re-persiste o chamado ao carregar o paciente
         chamadoRepository.flush();
     }
 
@@ -135,6 +143,26 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Override
     public long contarChamadosAtivosApos(Long unidadeId, StatusChamado status, LocalDateTime apos) {
         return chamadoRepository.countByUnidadeSaude_IdAndStatusChamadoAndDataCheckinAfter(unidadeId, status, apos);
+    }
+
+    @Override
+    public void cancelar(Long pacienteId, Long chamadoId) {
+        Chamado chamadoEncontrado = buscarChamadoById(chamadoId);
+
+        if (!chamadoEncontrado.getPaciente().getId().equals(pacienteId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chamado não encontrado.");
+        }
+
+        if (NAO_CANCELAVEIS.contains(chamadoEncontrado.getStatusChamado())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Este chamado não pode mais ser cancelado.");
+        }
+
+        Chamado cancelado = chamadoEncontrado.toBuilder()
+                .statusChamado(StatusChamado.CANCELADO)
+                .build();
+
+        chamadoRepository.save(chamadoMapper.toEntity(cancelado));
     }
 
     private UnidadeSaude buscarUnidadeSaudeRecomendada(Chamado chamado) {

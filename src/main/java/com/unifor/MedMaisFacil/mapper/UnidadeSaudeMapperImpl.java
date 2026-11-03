@@ -37,6 +37,7 @@ public class UnidadeSaudeMapperImpl implements UnidadeSaudeMapper {
     @Override
     public UnidadeSaudeResponseDTO toDTO(UnidadeSaude model) {
         return new UnidadeSaudeResponseDTO(
+                model.getId(),
                 model.getNome(),
                 model.getEndereco(),
                 model.getDistanciaKm(),

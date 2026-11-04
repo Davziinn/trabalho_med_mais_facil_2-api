@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,7 @@ public class TotemServiceImpl implements TotemService {
     }
 
     @Override
+    @Transactional
     public SinaisVitais registrarSinaisVitais(Long chamadoId, SinaisVitais sinaisVitais) {
         Chamado chamadoIdentificado = chamadoService.buscarChamadoById(chamadoId);
 
@@ -59,10 +62,15 @@ public class TotemServiceImpl implements TotemService {
             throw new IllegalStateException("Este chamado não está aguardando triagem (status atual: " + chamadoIdentificado.getStatusChamado() + ")");
         }
 
+        if (chamadoIdentificado.getSinaisVitais() != null) {
+            sinaisVitais.setId(chamadoIdentificado.getSinaisVitais().getId());
+        }
+
         Chamado chamadoAtualizado = recalcularPrioridade(chamadoIdentificado, sinaisVitais);
 
         SinaisVitais sinaisVitaisParaSalvar = sinaisVitais.toBuilder()
                 .chamado(chamadoAtualizado)
+                .capturadoEm(LocalDateTime.now())
                 .build();
 
         return sinaisVitaisService.salvarSinaisVitais(sinaisVitaisParaSalvar);
@@ -95,6 +103,7 @@ public class TotemServiceImpl implements TotemService {
                 .senhaFila(senhaGerada)
                 .unidadeSaude(unidadeDoTotem)
                 .dataCheckin(LocalDateTime.now())
+                .dataSenha(LocalDate.now())
                 .build());
 
         return new TotemCheckin(

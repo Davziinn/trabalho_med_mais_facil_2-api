@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,8 +25,11 @@ public class ChamadoEntity {
     @Column(name = "ID_CHAMADO")
     private Long id;
 
-    @Column(name = "SENHA_FILA", unique = true)
+    @Column(name = "SENHA_FILA")
     private String senhaFila;
+
+    @Column(name = "DATA_SENHA")
+    private LocalDate dataSenha;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STS_CHAMADO", nullable = false)

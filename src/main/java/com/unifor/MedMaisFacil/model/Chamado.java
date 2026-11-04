@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class Chamado {
     private PrioridadeChamado prioridadeChamado;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataCheckin;
+    private LocalDate dataSenha;
     private Paciente paciente;
     private SinaisVitais sinaisVitais;
     private QuestionarioSintomas questionarioSintomas;

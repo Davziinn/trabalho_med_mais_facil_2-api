@@ -30,6 +30,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .senhaFila(entity.getSenhaFila())
                 .dataCriacao(entity.getDataCriacao())
                 .dataCheckin(entity.getDataCheckin())
+                .dataSenha(entity.getDataSenha())
                 .paciente(entity.getPaciente() != null
                         ? Paciente.builder().id(entity.getPaciente().getId()).build()
                         : null)
@@ -48,6 +49,7 @@ public class ChamadoMapperImpl implements ChamadoMapper {
                 .senhaFila(model.getSenhaFila())
                 .dataCriacao(model.getDataCriacao())
                 .dataCheckin(model.getDataCheckin())
+                .dataSenha(model.getDataSenha())
                 .paciente(model.getPaciente() != null
                         ? PacienteEntity.builder().id(model.getPaciente().getId()).build()
                         : null)

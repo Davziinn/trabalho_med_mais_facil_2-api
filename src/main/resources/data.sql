@@ -109,3 +109,18 @@ INSERT INTO TB_UNID_SINTO_ATENDI (UNID_ID, SINT_ATEND) VALUES
 -- maioria), sem estrutura de emergência 24h. Mesmo critério já usado
 -- para o Pronto Socorro Infantil no lote anterior: ficam cadastradas
 -- como unidade, mas fora do roteamento de sintomas até decisão de escopo.
+-- =====================================================================
+-- Totem de desenvolvimento (unidade 1). Guarda só o SHA-256 da chave;
+-- a chave em texto vai no VITE_TOTEM_KEY do totem-web, enviada no
+-- header X-Totem-Key. Troque a chave antes de usar fora do ambiente local.
+-- =====================================================================
+INSERT INTO TB_TOTEM (NM_TOT, CV_HSH, IDT_TOT, unidade_saude_id) VALUES
+('Totem dev - unidade 1', '4cfcbd446b311513afa16d7e7e3d789166fc11561c1008f34e1cbd623f9f2ff4', true, 1)
+ON CONFLICT (CV_HSH) DO NOTHING;
+
+-- =====================================================================
+-- SENHA_FILA deixou de ser única: o contador (TB_CONTADOR_SENHA) zera a
+-- cada dia, então V001 se repete em datas diferentes. O ddl-auto: update
+-- não remove constraints antigas, por isso o DROP fica aqui.
+-- =====================================================================
+ALTER TABLE TB_CHAMADO DROP CONSTRAINT IF EXISTS tb_chamado_senha_fila_key;

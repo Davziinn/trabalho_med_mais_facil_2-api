@@ -1,29 +1,34 @@
+
 spring:
   application:
-    name=MedMaisFacil
+    name: MedMaisFacil
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/DBMMF
-    username: admin
-    password: admin
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/DBMMF}
+    username: ${DATABASE_USERNAME:admin}
+    password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
+
   sql:
     init:
-      # Carrega as unidades de saúde do data.sql a cada start (o Postgres não roda por padrão)
       mode: always
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    # Roda o data.sql depois que o Hibernate cria as tabelas
     defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: ${PORT:8080}
 
 medmaisfacil:
   lotacao:
     janela-hora: 3
 
 jwt:
-  secret: aB7xK9mQ2vL5nR8pT4wY6zF1hJ3cD0sE
+  secret: ${JWT_SECRET}
   expiration-minutes: 15
